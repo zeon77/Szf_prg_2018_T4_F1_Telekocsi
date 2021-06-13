@@ -34,6 +34,22 @@ namespace Telekocsi
                 .OrderBy(x => x.ÖsszFérőhely).Last();                                                                   // Legnagyobb kiválasztása
             Console.WriteLine($"4. feladat\n\tA legtöbb férőhelyet ({MaxFérőhelyPerÚtvonal.ÖsszFérőhely}-et) a " +
                 $"{MaxFérőhelyPerÚtvonal.Indulás}-{MaxFérőhelyPerÚtvonal.Cél} útvonalon ajánlották ");
+
+            //5. feladat
+            Console.WriteLine($"5. feladat");
+            List<Igény> igények = new List<Igény>();
+            foreach (var sor in File.ReadAllLines("igenyek.csv").Skip(1))
+            {
+                igények.Add(new Igény(sor));
+            }
+
+            // JOIN query szintaktikával:
+            var result = from j in járatok
+                         join i in igények
+                         on new { j.Indulás, j.Cél } equals new { i.Indulás, i.Cél }
+                         select new { i.Azonosító, j.Rendszám };
+
+            result.ToList().ForEach(x => Console.WriteLine($"\t{x.Azonosító} => {x.Rendszám}"));
         }
     }
 }
