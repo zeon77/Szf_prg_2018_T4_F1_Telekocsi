@@ -22,6 +22,10 @@ namespace Telekocsi
             // (Ennek ellenére nincs két egyforma hirdető, vagyis egy autó csak egy útvonalon közlekedik...)
             Console.WriteLine($"2. feladat\n\t{járatok.GroupBy(x => x.Rendszám).Count()} autós hirdet fuvart");
 
+            //3. feladat
+            Console.WriteLine($"3. feladat\n\tÖsszesen " +
+                $"{járatok.Where(x => x.Indulás == "Budapest" && x.Cél == "Miskolc").Sum(x => x.Férőhely)}" +
+                $" férőhelyet hirdettek az autósok Budapestről Miskolcra.");
         }
     }
 }
