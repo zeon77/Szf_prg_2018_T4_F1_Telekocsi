@@ -43,13 +43,30 @@ namespace Telekocsi
                 igények.Add(new Igény(sor));
             }
 
-            // JOIN query szintaktikával:
+            // INNER JOIN query szintaktikával:
             var result = from j in járatok
                          join i in igények
                          on new { j.Indulás, j.Cél } equals new { i.Indulás, i.Cél }
                          select new { i.Azonosító, j.Rendszám };
 
             result.ToList().ForEach(x => Console.WriteLine($"\t{x.Azonosító} => {x.Rendszám}"));
+
+            //6. feladat
+            Console.WriteLine($"6. feladat: utasuzenetek.txt");
+            List<string> lines = new List<string>();
+            var result2 = 
+                from i in igények
+                join j in járatok
+                on new { i.Indulás, i.Cél } equals new { j.Indulás, j.Cél } into ijgroup
+                from ij in ijgroup.DefaultIfEmpty()
+                //itt a select-nél el lehet dönteni, hogy ahol nincs kapcsolódó elem, ott null érték vagy mondjuk üres string legyen...:
+                select new { Azonosító = i.Azonosító, Rendszám = ij?.Rendszám ?? null, Telefonszám = ij?.Telefonszám ?? null };
+                //select new { Azonosító = i.Azonosító, Rendszám = ij?.Rendszám ?? string.Empty, Telefonszám = ij?.Telefonszám ?? string.Empty };
+                //select new { Azonosító = i.Azonosító, Rendszám = ij?.Rendszám ?? "", Telefonszám = ij?.Telefonszám ?? "" };
+
+            result2.ToList().ForEach(x => lines.Add($"{x.Azonosító}: " + (x.Rendszám is null ? "Sajnos nem sikerült autót találni" : $"Rendszám: {x.Rendszám}, Telefonszám: {x.Telefonszám}")));
+            
+            File.WriteAllLines("utasuzenetek.txt", lines);
         }
     }
 }
