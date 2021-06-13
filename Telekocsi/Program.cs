@@ -26,6 +26,14 @@ namespace Telekocsi
             Console.WriteLine($"3. feladat\n\tÖsszesen " +
                 $"{járatok.Where(x => x.Indulás == "Budapest" && x.Cél == "Miskolc").Sum(x => x.Férőhely)}" +
                 $" férőhelyet hirdettek az autósok Budapestről Miskolcra.");
+
+            //4. feladat: Legtöbb férőhely / útvonal
+            var MaxFérőhelyPerÚtvonal = járatok
+                .GroupBy(x => new { x.Indulás, x.Cél })                                                                 // Csoportosítás két mező szerint
+                .Select(g => new { Indulás = g.Key.Indulás, Cél = g.Key.Cél, ÖsszFérőhely = g.Sum(x => x.Férőhely) })   // Férőhelyek összegzése csoportonként
+                .OrderBy(x => x.ÖsszFérőhely).Last();                                                                   // Legnagyobb kiválasztása
+            Console.WriteLine($"4. feladat\n\tA legtöbb férőhelyet ({MaxFérőhelyPerÚtvonal.ÖsszFérőhely}-et) a " +
+                $"{MaxFérőhelyPerÚtvonal.Indulás}-{MaxFérőhelyPerÚtvonal.Cél} útvonalon ajánlották ");
         }
     }
 }
